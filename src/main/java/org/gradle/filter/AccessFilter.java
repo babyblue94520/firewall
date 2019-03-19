@@ -13,14 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.gradle.bean.VerifyRequestResult;
 import org.gradle.firewall.FirewallService;
 import org.gradle.firewall.FirewallStatus;
 import org.gradle.util.WebUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 
 
 /**
@@ -75,11 +75,12 @@ public class AccessFilter implements Filter{
 		, HttpServletResponse response
 		, VerifyRequestResult verifyResult
 	) {
-		String ip = WebUtil.getClientIp(request);
+		String remoteIp = request.getRemoteAddr();
+		String clientIp = WebUtil.getClientIp(request);
 		String origin = request.getHeader(HttpHeaders.ORIGIN);
 		String path = request.getRequestURI();
 		String url = request.getRequestURL().toString();
-		int status = firewallService.parse(url,path,origin,ip);
+		int status = firewallService.parse(url,path,origin,remoteIp,clientIp);
 		switch (status) {
 		// 拒絕跨域訪問
 		case FirewallStatus.CrossDomainAccessDenied:

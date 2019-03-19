@@ -16,16 +16,19 @@ import lombok.ToString;
 public class FirewallService {
 	
 	/** The allow ip pattern. */
-	private final Pattern allowIpPattern;
+	private final Pattern allowRemoteIpPattern;
+	private final Pattern allowClientIpPattern;
 	
 	/** The deny ip pattern. */
-	private final Pattern denyIpPattern;
+	private final Pattern denyRemoteIpPattern;
+	private final Pattern denyClientIpPattern;
 	
 	/** The defend paths. */
 	private final Pattern defendPaths;
 	
 	/** The access defend ips. */
-	private final Pattern accessDefendIps;
+	private final Pattern accessDefendRemoteIpPattern;
+	private final Pattern accessDefendClientIpPattern;
 	
 	/** The ignore path pattern. */
 	private final Pattern ignorePathPattern;
@@ -34,7 +37,8 @@ public class FirewallService {
 	private final Pattern ignoreFileTypePattern;
 	
 	/** The cross domain ip pattern. */
-	private final Pattern crossDomainIpPattern;
+	private final Pattern crossDomainRemoteIpPattern;
+	private final Pattern crossDomainClientIpPattern;
 	
 	/** The ignore cross domain path pattern. */
 	private final Pattern ignoreCrossDomainPathPattern;
@@ -55,6 +59,35 @@ public class FirewallService {
 		String url,
 		String path ,
 		String origin,
+		String remoteIp,
+		String clientIp
+	){
+		// 連線IP 跟 客戶端IP是否相同
+		boolean ipSame = false;
+		if(remoteIp==clientIp) {
+			ipSame = true;
+		}else if(remoteIp!=null&&remoteIp.equals(clientIp)) {
+			ipSame = true;
+		}
+		if(ipSame) {
+			return parse(url,path,origin,remoteIp);
+		}else {
+			return parseDiff(url,path,origin,remoteIp,clientIp);
+		}
+	}
+
+	/**
+	   *    連線IP和客戶端IP相同
+	 * @param url
+	 * @param path
+	 * @param origin
+	 * @param ip
+	 * @return
+	 */
+	private int parse(
+		String url,
+		String path ,
+		String origin,
 		String ip
 	){
 		//檢查是否為拒絕IP
@@ -66,7 +99,7 @@ public class FirewallService {
 			return FirewallStatus.AccessDenied;
 		}
 		
-		if(!isAllowAccessDefend(path,ip)){
+		if(!isAllowAccessDefendIp(path,ip)){
 			return FirewallStatus.AccessDefendDenied;
 		}
 		
@@ -94,7 +127,60 @@ public class FirewallService {
 			return FirewallStatus.Access;
 		}
 	}
+	
 
+	/**
+	 * parse 
+	   *    連線IP和客戶端IP 不相同
+	 *
+	 * @param request the request
+	 * @return the int
+	 */
+	private int parseDiff(
+		String url,
+		String path ,
+		String origin,
+		String remoteIp,
+		String clientIp
+	){
+		//檢查是否為拒絕IP
+		if(isDenyIp(remoteIp,clientIp)){
+			return FirewallStatus.AccessDenied;
+		}
+		//檢查是否為允許IP
+		if(!(isAllowIp(remoteIp,clientIp))){
+			return FirewallStatus.AccessDenied;
+		}
+		// 檢查是否可訪問保護的路徑
+		if(!isAllowAccessDefendIp(path,remoteIp,clientIp)){
+			return FirewallStatus.AccessDefendDenied;
+		}
+		
+		//跨域請求
+		if(isCrossRequest(origin,url)){
+			if(!isAllowCrossIp(remoteIp,clientIp)){
+				return FirewallStatus.CrossDomainAccess;
+			}
+			if(isIgnoreCrossDomainFileType(path)){
+				return FirewallStatus.IgnoreCrossDomainFileAccess;
+			}
+			if(isIgnorecrossDomainPath(path)){
+				return FirewallStatus.IgnoreCrossDomainPathAccess;
+			}
+			return FirewallStatus.CrossDomainAccess;
+		//非跨域請求
+		}else{
+			//是否為忽略的請求
+			if(isIgnoreFileType(path)){
+				return FirewallStatus.IgnoreFileAccess;
+			}
+			if(isIgnorePath(path)){
+				return FirewallStatus.IgnorePathAccess;
+			}
+			return FirewallStatus.Access;
+		}
+	}
+	
 	/**
 	 * 是否忽略紀錄
 	 *
@@ -109,15 +195,31 @@ public class FirewallService {
 	 * isAllowAccessDefend 
 	 * IP是否可訪問受保護的路徑.
 	 *
-	 * @param requestURL the request URL
+	 * @param path the request URL
 	 * @param ip the ip
 	 * @return true, if is allow access defend
 	 */
-	private boolean isAllowAccessDefend(String requestURL,String ip){
-		if(doRegexFind(defendPaths,requestURL)){
-			if(!doRegexFind(accessDefendIps,ip)){
-				return false;
+	private boolean isAllowAccessDefendIp(String path,String ip){
+		if(doRegexFind(defendPaths,path)){
+			return doRegexFind(accessDefendRemoteIpPattern,ip);
+		}
+		return true;
+	}
+
+	/**
+	 * isAllowAccessDefend 
+	 * IP是否可訪問受保護的路徑.
+	 *
+	 * @param path the request URL
+	 * @param ip the ip
+	 * @return true, if is allow access defend
+	 */
+	private boolean isAllowAccessDefendIp(String path,String remoteIp,String clientIp){
+		if(doRegexFind(defendPaths,path)){
+			if(doRegexFind(accessDefendRemoteIpPattern,remoteIp)){
+				return doRegexFind(accessDefendClientIpPattern,clientIp);
 			}
+			return false;
 		}
 		return true;
 	}
@@ -143,8 +245,25 @@ public class FirewallService {
 	 */
 	private boolean isAllowIp(String ip){
 		//沒設定為全通過
-		if(allowIpPattern==null)return true;
-		return doRegexFind(allowIpPattern,ip);
+		if(allowRemoteIpPattern==null)return true;
+		return doRegexFind(allowRemoteIpPattern,ip);
+	}
+	
+	/**
+	 * Checks if is allow ip.
+	 *
+	 * @param ip the ip
+	 * @return true, if is allow ip
+	 */
+	private boolean isAllowIp(String remoteIp,String clientIp){
+		//沒設定為全通過
+		if(allowRemoteIpPattern==null)return true;
+		if(doRegexFind(allowRemoteIpPattern,remoteIp)) {
+			if(allowClientIpPattern==null)return true;
+			return doRegexFind(allowClientIpPattern,clientIp);
+		}else {
+			return false;
+		}
 	}
 	
 	/**
@@ -154,10 +273,23 @@ public class FirewallService {
 	 * @return true, if is deny ip
 	 */
 	private boolean isDenyIp(String ip){
-		return doRegexFind(denyIpPattern,ip);
+		return doRegexFind(denyRemoteIpPattern,ip);
 	}
 
-	
+	/**
+	 * Checks if is deny ip.
+	 *
+	 * @param ip the ip
+	 * @return true, if is deny ip
+	 */
+	private boolean isDenyIp(String remoteIp,String clientIp){
+		if(doRegexFind(denyRemoteIpPattern,remoteIp)) {
+			return true;
+		}else {
+			return doRegexFind(denyClientIpPattern,clientIp);
+		}
+	}
+
 	/**
 	 * Checks if is ignore path.
 	 *
@@ -185,8 +317,21 @@ public class FirewallService {
 	 * @return true, if is allow cross ip
 	 */
 	private boolean isAllowCrossIp(String ip){
-		if(crossDomainIpPattern==null)return true;
-		return doRegexFind(crossDomainIpPattern,ip);
+		return doRegexFind(crossDomainRemoteIpPattern,ip);
+	}
+
+	/**
+	 * Checks if is allow cross ip.
+	 *
+	 * @param ip the ip
+	 * @return true, if is allow cross ip
+	 */
+	private boolean isAllowCrossIp(String remoteIp,String clientIp){
+		if(doRegexFind(crossDomainRemoteIpPattern,remoteIp)) {
+			return doRegexFind(crossDomainClientIpPattern,clientIp);
+		}else {
+			return false;
+		}
 	}
 
 	/**

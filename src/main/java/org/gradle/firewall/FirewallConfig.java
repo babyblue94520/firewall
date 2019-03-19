@@ -15,16 +15,20 @@ import lombok.Setter;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix="firewall",ignoreNestedProperties=true)
+@ConfigurationProperties(prefix="firewall")
 class FirewallConfig{
 	private String[] ignoreLogPaths;
-	private String[] allowIps;
-	private String[] denyIps;
-	private String[] accessDefendIps;
+	private String[] allowRemoteIps;
+	private String[] allowClientIps;
+	private String[] denyRemoteIps;
+	private String[] denyClientIps;
+	private String[] accessDefendRemoteIps;
+	private String[] accessDefendClientIps;
 	private String[] defendPaths;
 	private String[] ignorePaths;
 	private String[] ignoreFileTypes;
-	private String[] crossDomainIps;
+	private String[] crossDomainRemoteIps;
+	private String[] crossDomainClientIps;
 	private String[] ignoreCrossDomainPaths;
 	private String[] ignoreCrossDomainFileTypes;
 }

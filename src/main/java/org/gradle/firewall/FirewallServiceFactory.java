@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,6 +26,7 @@ public class FirewallServiceFactory {
 	 */
 	@Bean
 	@Autowired
+	@RefreshScope
 	public FirewallService initFireWallService(
 		FirewallConfig config
 		,ServletContext context
@@ -33,13 +35,17 @@ public class FirewallServiceFactory {
 		String contextPath = context.getContextPath();
 		return FirewallService.builder()
 				.ignoreLogPathPattern(path2Pattern(config.getIgnoreLogPaths(), contextPath))
-				.allowIpPattern(ip2Pattern(config.getAllowIps()))
-				.denyIpPattern(ip2Pattern(config.getDenyIps()))
-				.accessDefendIps(ip2Pattern(config.getAccessDefendIps()))
+				.allowRemoteIpPattern(ip2Pattern(config.getAllowRemoteIps()))
+				.allowClientIpPattern(ip2Pattern(config.getAllowClientIps()))
+				.denyRemoteIpPattern(ip2Pattern(config.getDenyRemoteIps()))
+				.denyClientIpPattern(ip2Pattern(config.getDenyClientIps()))
+				.accessDefendRemoteIpPattern(ip2Pattern(config.getAccessDefendRemoteIps()))
+				.accessDefendClientIpPattern(ip2Pattern(config.getAccessDefendClientIps()))
 				.defendPaths(path2Pattern(config.getDefendPaths(), contextPath))
 				.ignorePathPattern(path2Pattern(config.getIgnorePaths(), contextPath))
 				.ignoreFileTypePattern(fileType2Pattern(config.getIgnoreFileTypes()))
-				.crossDomainIpPattern(ip2Pattern(config.getCrossDomainIps()))
+				.crossDomainRemoteIpPattern(ip2Pattern(config.getCrossDomainRemoteIps()))
+				.crossDomainClientIpPattern(ip2Pattern(config.getCrossDomainClientIps()))
 				.ignoreCrossDomainPathPattern(path2Pattern(config.getIgnoreCrossDomainPaths(), contextPath))
 				.ignoreCrossDomainFileTypePattern(fileType2Pattern(config.getIgnoreCrossDomainFileTypes()))
 				.build();
