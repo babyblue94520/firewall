@@ -1,0 +1,48 @@
+firewall:
+  rule:
+    allow-cross-domain:
+      - 127.0.0.1
+      - localhost
+      - regex:^192\.168\.3\.\d{1,3}$
+      - regex:^172\.23\.\d{1,3}\.\d{1,3}$
+
+  additional-rule:
+    allow-cross-domain:
+      - dev.primestar.plus
+      - regex:^([^.]+\.)?primestar\.plus$
+
+  test:
+    in-out-rule:
+      in:
+        fixed:
+          - http://127.0.0.1:9090
+          - http://localhost:8080
+          - http://dev.primestar.plus
+          - https://127.0.0.1:9090
+          - https://localhost:8080
+          - https://dev.primestar.plus
+        regex:
+          - http://192.168.3.9:9010
+          - http://192.168.3.12
+          - http://172.23.1.12
+          - http://172.23.66.12
+          - http://172.23.66.128:9012
+          - https://primestar.plus
+          - https://qa.primestar.plus
+
+      out:
+        fixed:
+          - http://127.0.0.2:9090
+          - http://localhosts:8080
+          - http://dev.primestart.plus
+          - https://127.0.0.2:9090
+          - https://localhosts:8080
+          - https://dev.primestart.plus
+        regex:
+          - http://192.16.3.9:9010
+          - http://12.168.3.12
+          - http://172.21.1.12
+          - http://17.23.66.12
+          - http://170.23.66.128:9012
+          - https://primestar.plusaa
+          - https://bb.qa.primestar.plus

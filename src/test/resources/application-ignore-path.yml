@@ -1,0 +1,49 @@
+firewall:
+  rule:
+    ignore-path:
+      - /
+      - /csrf
+      - /v2/api-docs
+      - regex:\.(html|js|css|ico|woff|tff|svg|eot|png|jpg|gif|jpeg|svg|bmp|woff2|mp3|json)$
+      - regex:[-/]swagger[-/]
+      - regex:^/actuator(/.*)?$
+      - regex:^/admin-server(/.*)?$
+
+  test:
+    in-out-rule:
+      in:
+        fixed:
+          - /
+          - /csrf
+          - /v2/api-docs
+        regex:
+          - /index.html
+          - /assets/css/test.css
+          - /assets/js/test.js
+          - /assets/images/test.png
+          - /assets/css/test.woff2
+          - /swagger-ui.html
+          - /webjars/springfox-swagger-ui/springfox.js
+          - /swagger-resources
+          - /webjars/springfox-swagger-ui/swagger-ui-standalone-preset.js
+          - /actuator
+          - /actuator/bb/aa
+          - /admin-server/metrics
+
+      out:
+        fixed:
+        - /test
+        - aaa/csrf
+        - /v2/api-docs/bb
+        regex:
+          - /index.html2
+          - /assets/css/test.csss
+          - /assets/js/test.jss
+          - /assets/images/test.pngg
+          - /assets/css/test.woff22
+          - /swaggera-ui.html1
+          - /webjars/springfox-aswagger-ui
+          - rrswagger-resources
+          - /actuatora
+          - /actuator-b/bb/aa
+          - /admin-serverb

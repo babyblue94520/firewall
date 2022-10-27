@@ -1,0 +1,82 @@
+firewall:
+  rule:
+    defend-path:
+      - /actuator/env
+      - /actuator/metrics
+      - regex:[-/]swagger[-/]
+      - regex:^/actuator(/.*)?$
+
+    defend-allow-ip:
+      - 127.0.0.1
+      - 172.16.0.23
+      - regex:^192\.168(\.\d{1,3}){2}$
+      - regex:^10\.21(\.\d{1,3}){2}$
+
+    defend-allow-remote-ip:
+      - 127.0.0.1
+      - 172.16.0.23
+      - regex:^192\.168\.1\.\d{1,3}$
+
+  test:
+    in-out-rule:
+      in:
+        fixed:
+          - /actuator/env
+          - /actuator/metrics
+        regex:
+          - /swagger-ui/test
+          - /swagger-ui.html
+          - /swagger-ui/api-doc.json
+          - /actuator
+          - /actuator/test/aa
+          - /actuator/bb/aa
+
+      out:
+        fixed:
+          - actuator/env
+          - actuator/env/b
+          - /b/actuator/metrics
+          - /a/b
+          -
+        regex:
+          - swagger-ui
+          - actuator/wow
+          - /actuators
+
+    in-out-ip-rule:
+      in:
+        ips:
+          fixed:
+            - 127.0.0.1
+            - 172.16.0.23
+          regex:
+            - 127.0.0.1
+            - 172.16.0.23
+            - 192.168.0.99
+            - 10.21.6.123
+        remoteIps:
+          fixed:
+            - 127.0.0.1
+            - 172.16.0.23
+          regex:
+            - 192.168.1.1
+            - 192.168.1.2
+            - 192.168.1.99
+
+      out:
+        ips:
+          fixed:
+            - 127.0.0.2
+            - 172.17.0.23
+            - 192.10.0.1
+          regex:
+            - 192.169.0.1
+            - 10.10.3.2
+            - 3.3.3.3
+        remoteIps:
+          fixed:
+            - 127.0.0.1
+            - 172.16.0.23
+          regex:
+            - 127.0.0.1
+            - 172.16.0.23
