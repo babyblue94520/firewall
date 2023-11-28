@@ -6,8 +6,8 @@ firewall:
       - /v2/api-docs
       - regex:\.(html|js|css|ico|woff|tff|svg|eot|png|jpg|gif|jpeg|svg|bmp|woff2|mp3|json)$
       - regex:[-/]swagger[-/]
-      - regex:^/actuator(/.*)?$
-      - regex:^/admin-server(/.*)?$
+      - regex:/actuator(/.*)?$
+      - regex:/admin-server(/.*)?$
 
   test:
     in-out-rule:

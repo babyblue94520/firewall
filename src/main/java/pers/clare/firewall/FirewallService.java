@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FirewallService {
-    private static final Pattern DOMAIN_PATTERN = Pattern.compile("^https?://([^:/]+)");
+    private static final Pattern DOMAIN_PATTERN = Pattern.compile("^https?://([^:/]+(:\\d+)?)");
     private FirewallRule defendPath = new FirewallRule();
     private FirewallRule defendAllowIp = new FirewallRule();
     private FirewallRule defendAllowRemoteIp = new FirewallRule();

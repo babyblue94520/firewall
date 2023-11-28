@@ -4,18 +4,18 @@ firewall:
       - /actuator/env
       - /actuator/metrics
       - regex:[-/]swagger[-/]
-      - regex:^/actuator(/.*)?$
+      - regex:/actuator(/.*)?
 
     defend-allow-ip:
       - 127.0.0.1
       - 172.16.0.23
-      - regex:^192\.168(\.\d{1,3}){2}$
-      - regex:^10\.21(\.\d{1,3}){2}$
+      - regex:192\.168(\.\d{1,3}){2}
+      - regex:10\.21(\.\d{1,3}){2}
 
     defend-allow-remote-ip:
       - 127.0.0.1
       - 172.16.0.23
-      - regex:^192\.168\.1\.\d{1,3}$
+      - regex:192\.168\.1\.\d{1,3}
 
   test:
     in-out-rule:

@@ -1,15 +1,14 @@
 package pers.clare.firewall;
 
-import pers.clare.FirewallApplicationTest;
-import pers.clare.firewall.input.InOutIpRule;
-import pers.clare.firewall.input.InOutRule;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.StringUtils;
+import pers.clare.FirewallApplicationTest;
+import pers.clare.firewall.input.InOutIpRule;
+import pers.clare.firewall.input.InOutRule;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("FirewallService test")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -73,87 +72,73 @@ class FirewallServiceTest {
             }
         }
 
-        
-        
+
         @DisplayName("Allowed ip access")
         @Nested
         class allowed {
 
             @Test
-            
             void allowed_fixed_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getIn().getIps().getFixed());
             }
 
             @Test
-            
             void allowed_regex_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getIn().getIps().getRegex());
             }
 
             @Test
-            
             void allowed_fixed_ip_and_fixed_remote_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getIn().getIps().getFixed(), inOutIpRule.getIn().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void allowed_regex_ip_and_fixed_remote_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getIn().getIps().getRegex(), inOutIpRule.getIn().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void allowed_fixed_ip_regex_remote_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getIn().getIps().getFixed(), inOutIpRule.getIn().getRemoteIps().getRegex());
             }
 
             @Test
-            
             void allowed_regex_ip_regex_remote_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getIn().getIps().getRegex(), inOutIpRule.getIn().getRemoteIps().getRegex());
             }
         }
 
-        
-        
+
         @DisplayName("Denied ip access")
         @Nested
         class denied {
 
             @Test
-            
             void fixed_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getOut().getIps().getFixed());
             }
 
             @Test
-            
             void regex_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getOut().getIps().getRegex());
             }
 
             @Test
-            
             void fixed_ip_and_fixed_remote_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getOut().getIps().getFixed(), inOutIpRule.getOut().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void regex_ip_and_fixed_remote_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getOut().getIps().getRegex(), inOutIpRule.getOut().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void fixed_ip_and_regex_remote_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getOut().getIps().getFixed(), inOutIpRule.getOut().getRemoteIps().getRegex());
             }
 
             @Test
-            
             void regex_ip_and_regex_remote_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getOut().getIps().getRegex(), inOutIpRule.getOut().getRemoteIps().getRegex());
             }
@@ -189,8 +174,8 @@ class FirewallServiceTest {
         }
 
         @Nested
-        
-        
+
+
         @DisplayName("Check block ip data")
         class check {
 
@@ -221,87 +206,73 @@ class FirewallServiceTest {
             }
         }
 
-        
-        
+
         @DisplayName("Allowed ip access")
         @Nested
         class allowed {
 
             @Test
-            
             void allowed_fixed_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getOut().getIps().getFixed());
             }
 
             @Test
-            
             void allowed_regex_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getOut().getIps().getRegex());
             }
 
             @Test
-            
             void allowed_fixed_ip_and_fixed_remote_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getOut().getIps().getFixed(), inOutIpRule.getOut().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void allowed_regex_ip_and_fixed_remote_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getOut().getIps().getRegex(), inOutIpRule.getOut().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void allowed_fixed_ip_regex_remote_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getOut().getIps().getFixed(), inOutIpRule.getOut().getRemoteIps().getRegex());
             }
 
             @Test
-            
             void allowed_regex_ip_regex_remote_ip_access() {
                 test(FirewallType.ACCESS, inOutIpRule.getOut().getIps().getRegex(), inOutIpRule.getOut().getRemoteIps().getRegex());
             }
         }
 
-        
-        
+
         @DisplayName("Denied ip access")
         @Nested
         class denied {
 
             @Test
-            
             void fixed_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getIn().getIps().getFixed());
             }
 
             @Test
-            
             void regex_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getIn().getIps().getRegex());
             }
 
             @Test
-            
             void fixed_ip_and_fixed_remote_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getIn().getIps().getFixed(), inOutIpRule.getIn().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void regex_ip_and_fixed_remote_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getIn().getIps().getRegex(), inOutIpRule.getIn().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void fixed_ip_and_regex_remote_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getIn().getIps().getFixed(), inOutIpRule.getIn().getRemoteIps().getRegex());
             }
 
             @Test
-            
             void regex_ip_and_regex_remote_ip_access() {
                 test(FirewallType.ACCESS_DENIED, inOutIpRule.getIn().getIps().getRegex(), inOutIpRule.getIn().getRemoteIps().getRegex());
             }
@@ -326,8 +297,8 @@ class FirewallServiceTest {
         private InOutIpRule inOutIpRule;
 
         @Nested
-        
-        
+
+
         @DisplayName("Allow access to defend path")
         class allow {
             void test(String[] paths, String[] ips) {
@@ -348,57 +319,49 @@ class FirewallServiceTest {
             }
 
             @Test
-            
             void fixed_ip_access_fixed_defend_path() {
                 test(inOutRule.getIn().getFixed(), inOutIpRule.getIn().getIps().getFixed());
             }
 
             @Test
-            
             void fixed_ip_access_regex_defend_path() {
                 test(inOutRule.getIn().getRegex(), inOutIpRule.getIn().getIps().getFixed());
             }
 
             @Test
-            
             void regex_ip_access_fixed_defend_path() {
                 test(inOutRule.getIn().getFixed(), inOutIpRule.getIn().getIps().getRegex());
             }
 
             @Test
-            
             void regex_ip_access_regex_defend_path() {
                 test(inOutRule.getIn().getRegex(), inOutIpRule.getIn().getIps().getRegex());
             }
 
             @Test
-            
             void fixed_remote_ip_access_fixed_defend_path() {
                 test(inOutRule.getIn().getFixed(), inOutIpRule.getIn().getIps().getFixed(), inOutIpRule.getIn().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void fixed_remote_ip_access_regex_defend_path() {
                 test(inOutRule.getIn().getRegex(), inOutIpRule.getIn().getIps().getFixed(), inOutIpRule.getIn().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void regex_remote_ip_access_fixed_defend_path() {
                 test(inOutRule.getIn().getFixed(), inOutIpRule.getIn().getIps().getRegex(), inOutIpRule.getIn().getRemoteIps().getRegex());
             }
 
             @Test
-            
             void regex_remote_ip_access_regex_defend_path() {
                 test(inOutRule.getIn().getRegex(), inOutIpRule.getIn().getIps().getRegex(), inOutIpRule.getIn().getRemoteIps().getRegex());
             }
         }
 
         @Nested
-        
-        
+
+
         @DisplayName("Deny access to defend path")
         class deny {
 
@@ -430,50 +393,42 @@ class FirewallServiceTest {
             }
 
             @Test
-            
             void fixed_ip_access_fixed_defend_path() {
                 test(inOutRule.getIn().getFixed(), inOutIpRule.getOut().getIps().getFixed());
             }
 
             @Test
-            
             void fixed_ip_access_regex_defend_path() {
                 test(inOutRule.getIn().getRegex(), inOutIpRule.getOut().getIps().getFixed());
             }
 
             @Test
-            
             void regex_ip_access_fixed_defend_path() {
                 test(inOutRule.getIn().getFixed(), inOutIpRule.getOut().getIps().getRegex());
             }
 
             @Test
-            
             void regex_ip_access_regex_defend_path() {
                 test(inOutRule.getIn().getRegex(), inOutIpRule.getOut().getIps().getRegex());
             }
 
 
             @Test
-            
             void fixed_remote_ip_access_fixed_defend_path() {
                 test(inOutRule.getIn().getFixed(), inOutIpRule.getOut().getIps().getFixed(), inOutIpRule.getOut().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void fixed_remote_ip_access_regex_defend_path() {
                 test(inOutRule.getIn().getRegex(), inOutIpRule.getOut().getIps().getFixed(), inOutIpRule.getOut().getRemoteIps().getFixed());
             }
 
             @Test
-            
             void regex_remote_ip_access_fixed_defend_path() {
                 test(inOutRule.getIn().getFixed(), inOutIpRule.getOut().getIps().getRegex(), inOutIpRule.getOut().getRemoteIps().getRegex());
             }
 
             @Test
-            
             void regex_remote_ip_access_regex_defend_path() {
                 test(inOutRule.getIn().getRegex(), inOutIpRule.getOut().getIps().getRegex(), inOutIpRule.getOut().getRemoteIps().getRegex());
             }
@@ -501,24 +456,21 @@ class FirewallServiceTest {
         }
 
         @Nested
-        
-        
+
+
         @DisplayName("Access to ignore path")
         class ignore {
             @Test
-            
             void access_fixed_ignore_path() {
                 test(FirewallType.IGNORE_PATH_ACCESS, inOutRule.getIn().getFixed());
             }
 
             @Test
-            
             void access_regex_ignore_path() {
                 test(FirewallType.IGNORE_PATH_ACCESS, inOutRule.getIn().getRegex());
             }
 
             @Test
-            
             void add_rule() {
                 String path = "/" + System.currentTimeMillis();
                 test(FirewallType.ACCESS, path);
@@ -534,18 +486,16 @@ class FirewallServiceTest {
         }
 
         @Nested
-        
-        
+
+
         @DisplayName("Access to not ignore path")
         class not_ignore {
             @Test
-            
             void access_not_fixed_ignore_path() {
                 test(FirewallType.ACCESS, inOutRule.getOut().getFixed());
             }
 
             @Test
-            
             void access_not_regex_ignore_path() {
                 test(FirewallType.ACCESS, inOutRule.getOut().getRegex());
             }
@@ -572,29 +522,24 @@ class FirewallServiceTest {
             for (String url : urls)
                 for (String origin : origins)
                     assertEquals(type, firewallService.parse("/", url, origin, "127.0.0.1")
-                            , () -> String.format("origin:%s", origin)
+                            , () -> String.format("url:%s origin:%s", url, origin)
                     );
         }
 
         @Nested
-        
-        
         @DisplayName("Allow cross-domain")
         class allowed {
             @Test
-            
             void fixed_cross_domain() {
                 test(FirewallType.CROSS_ACCESS, inOutRule.getIn().getFixed());
             }
 
             @Test
-            
             void regex_cross_domain() {
                 test(FirewallType.CROSS_ACCESS, inOutRule.getIn().getRegex());
             }
 
             @Test
-            
             void add_rule() {
                 String domain = String.valueOf(System.currentTimeMillis());
                 String origin = "http://" + domain;
@@ -610,18 +555,14 @@ class FirewallServiceTest {
         }
 
         @Nested
-        
-        
         @DisplayName("Deny cross-domain")
         class denied {
             @Test
-            
             void fixed_cross_domain() {
                 test(FirewallType.CROSS_ACCESS_DENIED, inOutRule.getOut().getFixed());
             }
 
             @Test
-            
             void regex_cross_domain() {
                 test(FirewallType.CROSS_ACCESS_DENIED, inOutRule.getOut().getRegex());
             }

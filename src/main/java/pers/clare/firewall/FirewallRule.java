@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class FirewallRule {
@@ -66,6 +67,18 @@ public class FirewallRule {
 
     private Pattern toPattern(Set<String> regexRules) {
         if (regexRules == null || regexRules.size() == 0) return null;
-        return Pattern.compile(String.join("|", regexRules));
+        StringBuilder sb = new StringBuilder();
+        for (String regexRule : regexRules) {
+            sb.append('(').append(regexRule).append(')').append('|');
+        }
+        sb.delete(sb.length() - 1, sb.length());
+        return Pattern.compile(sb.toString());
+    }
+
+    public static void main(String[] args) {
+        Pattern pattern = Pattern.compile("^((9.9.9.9(:\\d+)?)|(192\\.168\\.3\\.\\d{1,3})|(([^.]+\\.)?primestar\\.plus(:\\d+)?)|(172\\.23\\.\\d{1,3}\\.\\d{1,3}(:\\d+)?))$");
+
+        Matcher matcher = pattern.matcher("192.168.3.9:9010");
+        System.out.println(matcher.find());
     }
 }

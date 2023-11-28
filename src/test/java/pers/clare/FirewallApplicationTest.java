@@ -1,8 +1,8 @@
 package pers.clare;
 
-import pers.clare.firewall.EnableFirewall;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import pers.clare.firewall.EnableFirewall;
 
 @EnableFirewall
 @SpringBootApplication
