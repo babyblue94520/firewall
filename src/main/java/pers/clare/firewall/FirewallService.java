@@ -1,11 +1,8 @@
 package pers.clare.firewall;
 
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class FirewallService {
-    private static final Pattern DOMAIN_PATTERN = Pattern.compile("^https?://([^:/]+(:\\d+)?)");
     private FirewallRule defendPath = new FirewallRule();
     private FirewallRule defendAllowIp = new FirewallRule();
     private FirewallRule defendAllowRemoteIp = new FirewallRule();
@@ -202,7 +199,7 @@ public class FirewallService {
      */
     public boolean isCross(String domain, String url) {
         if (domain == null || url == null) return false;
-        return !url.contains(domain);
+        return !Objects.equals(toDomain(url), domain);
     }
 
     public boolean isAllowIp(String ip) {
@@ -238,10 +235,19 @@ public class FirewallService {
     }
 
     private String toDomain(String origin) {
-        if (origin == null || origin.length() == 0) return null;
-        Matcher matcher = DOMAIN_PATTERN.matcher(origin);
-        if (!matcher.find()) return null;
-        return matcher.group(1);
+        if (origin == null || origin.length() == 0) return origin;
+        char[] cs = origin.toCharArray();
+        int count = 0;
+        int start = 0;
+        for (; start < cs.length; start++) {
+            if (cs[start] != '/') continue;
+            if (++count == 2) break;
+        }
+        int end = ++start;
+        for (; end < cs.length; end++) {
+            if (cs[end] == '/') break;
+        }
+        return new String(cs, start, end - start);
     }
 
     public FirewallRule getDefendPath() {
